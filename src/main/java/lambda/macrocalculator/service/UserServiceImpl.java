@@ -1,5 +1,6 @@
 package lambda.macrocalculator.service;
 
+import lambda.macrocalculator.exception.ResourceNotFoundException;
 import lambda.macrocalculator.model.Role;
 import lambda.macrocalculator.model.User;
 import lambda.macrocalculator.model.UserRoles;
@@ -29,12 +30,12 @@ public class UserServiceImpl implements UserDetailsService, UserService
 	private RoleRepository roleRepos;
 
 	@Override
-	public User findUserByUsername(String username) throws UsernameNotFoundException
+	public User findUserByUsername(String username) throws ResourceNotFoundException
 	{
 		User user = userRepos.findByUsername(username);
 		if(user == null)
 		{
-			throw new UsernameNotFoundException("Invalid username or password");
+			throw new ResourceNotFoundException("Could not find user with name " + username);
 		}
 		return user;
 	}
@@ -48,13 +49,13 @@ public class UserServiceImpl implements UserDetailsService, UserService
 	}
 
 	@Override
-	public User findUserById(long id) throws EntityNotFoundException
+	public User findUserById(long id) throws ResourceNotFoundException
 	{
-		return userRepos.findById(id).orElseThrow(() -> new EntityNotFoundException(Long.toString(id)));
+		return userRepos.findById(id).orElseThrow(() -> new ResourceNotFoundException("Could not find user with id " + id));
 	}
 
 	@Override
-	public void delete(long id)
+	public void delete(long id) throws ResourceNotFoundException
 	{
 		if(userRepos.findById(id).isPresent())
 		{
@@ -62,7 +63,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
 			userRepos.deleteById(id);
 		} else
 		{
-			throw new EntityNotFoundException(Long.toString(id));
+			throw new ResourceNotFoundException("Could not find user with id " + id);
 		}
 	}
 
