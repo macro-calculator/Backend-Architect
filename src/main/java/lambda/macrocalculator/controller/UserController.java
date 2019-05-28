@@ -1,5 +1,6 @@
 package lambda.macrocalculator.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lambda.macrocalculator.model.User;
 import lambda.macrocalculator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class UserController
 	@Autowired
 	private UserService userService;
 
-	//returns the current users info
+	@ApiOperation("Returns currently authenticated user info")
 	//localhost:2019/users/current
 	@GetMapping(value = "/current",
 				produces = {"application/json"})
@@ -26,7 +27,7 @@ public class UserController
 		return new ResponseEntity<>(userService.getCurrentUser(principal), HttpStatus.OK);
 	}
 
-
+	@ApiOperation("Creates a new user")
 	//localhost:2019/users/create
 	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> addUser(@Valid @RequestBody User newUser)
@@ -35,6 +36,7 @@ public class UserController
 		return new ResponseEntity<>(null, HttpStatus.CREATED);
 	}
 
+	@ApiOperation("Updates the currently authenticated user")
 	@PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> updateUser(@RequestBody User updatedUser, Principal principal)
 	{
