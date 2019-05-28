@@ -57,6 +57,22 @@ public class User extends Auditable
     {
         setUsername(username);
         setPassword(password);
+
+    }
+
+    public User(String username, String password, String email, int age, float height, long currentweight,
+                String name, String activitylevel, String goal, List<UserRoles> userRoles)
+    {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.age = age;
+        this.height = height;
+        this.currentweight = currentweight;
+        this.name = name;
+        this.activitylevel = activitylevel;
+        this.goal = goal;
+
         for (UserRoles ur : userRoles)
         {
             ur.setUser(this);
@@ -95,6 +111,10 @@ public class User extends Auditable
         this.password = passwordEncoder.encode(password);
     }
 
+    public void setPlainTextPass(String password)
+	{
+		this.password = password;
+	}
     public void setPasswordNoEncrypt(String password)
     {
         this.password = password;
