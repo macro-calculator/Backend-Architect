@@ -22,14 +22,14 @@ public class Swagger2Config extends WebMvcConfigurerAdapter
     @Bean
     public Docket api()
     {
-        return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.lambdaschool.bookstore")).paths(PathSelectors.regex("/.*")).build().apiInfo(apiEndPointsInfo());
+        return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("lambda" +
+                ".macrocalculator")).paths(PathSelectors.regex("/.*")).build().apiInfo(apiEndPointsInfo());
     }
 
     private ApiInfo apiEndPointsInfo()
     {
-        return new ApiInfoBuilder().title("Documentation for Lambda Build Weeks project, Macro Calculator").description(
-                "User OAuth2 " +
-                "Example").contact(new Contact("Jeff Lapp", "http://www.lambdaschool.com", "lappjeff20@gmail.com")).license("MIT").licenseUrl("").version("1.0.0").build();
+        return new ApiInfoBuilder().title("Macro Calculator Docs").description(
+                "Documentation for Lambda Build Weeks project, Macro Calculator ").contact(new Contact("Jeff Lapp", "http://www.lambdaschool.com", "lappjeff20@gmail.com")).license("MIT").licenseUrl("").version("1.0.0").build();
     }
 
     @Override
