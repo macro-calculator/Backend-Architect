@@ -10,6 +10,8 @@ spring:
     console:
       path: /h2-console
       enabled: true
+  jackson:
+    serialization: false
 
 #need for Postgresql, shouldn't need until deployment
 #change the following line to point to your postgres database
