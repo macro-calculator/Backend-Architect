@@ -25,6 +25,7 @@ public class Role extends Auditable
 
     public Role()
     {
+        this.name = "USER";
     }
 
     public Role(String name)
