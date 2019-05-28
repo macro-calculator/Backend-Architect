@@ -24,6 +24,26 @@ public class User extends Auditable
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private int age;
+
+    @Column(nullable = false)
+    private float height;
+
+    @Column(nullable = false)
+    private long currentweight;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String activitylevel;
+
+    private String goal;
+
     @OneToMany(mappedBy = "user",
                cascade = CascadeType.ALL)
     @JsonIgnoreProperties("user")
@@ -100,5 +120,75 @@ public class User extends Auditable
             rtnList.add(new SimpleGrantedAuthority(myRole));
         }
         return rtnList;
+    }
+
+    public String getEmail()
+    {
+        return email;
+    }
+
+    public void setEmail(String email)
+    {
+        this.email = email;
+    }
+
+    public int getAge()
+    {
+        return age;
+    }
+
+    public void setAge(int age)
+    {
+        this.age = age;
+    }
+
+    public float getHeight()
+    {
+        return height;
+    }
+
+    public void setHeight(float height)
+    {
+        this.height = height;
+    }
+
+    public long getCurrentweight()
+    {
+        return currentweight;
+    }
+
+    public void setCurrentweight(long currentweight)
+    {
+        this.currentweight = currentweight;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getActivitylevel()
+    {
+        return activitylevel;
+    }
+
+    public void setActivitylevel(String activitylevel)
+    {
+        this.activitylevel = activitylevel;
+    }
+
+    public String getGoal()
+    {
+        return goal;
+    }
+
+    public void setGoal(String goal)
+    {
+        this.goal = goal;
     }
 }
