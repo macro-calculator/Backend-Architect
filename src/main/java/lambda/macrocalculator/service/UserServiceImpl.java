@@ -97,6 +97,25 @@ public class UserServiceImpl implements UserDetailsService, UserService
 		return userRepos.save(newUser);
 	}
 
+	@Override
+	public User update(User user, Principal principal)
+	{
+		User currentUser = getCurrentUser(principal);
+
+		if(user.getCurrentweight() != currentUser.getCurrentweight())
+		{
+			currentUser.setCurrentweight(user.getCurrentweight());
+		}
+
+		if(user.getGoal() != null)
+		{
+			currentUser.setGoal(user.getGoal());
+		}
+
+		return userRepos.save(currentUser);
+	}
+
+	@Transactional
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
