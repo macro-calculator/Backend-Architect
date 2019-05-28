@@ -85,15 +85,16 @@ public class UserServiceImpl implements UserDetailsService, UserService
 
 		ArrayList<UserRoles> newRoles = new ArrayList<>();
 
-		//Todo make conditional. No need to create a new USER role for each new user
-//		Assigns a basic user role as a default
-		Role baseRole = new Role("USER");
-		roleRepos.save(baseRole);
+		Role userRole = roleRepos.findByName("USER");
 
-		newRoles.add(new UserRoles(newUser, baseRole));
+		if(userRole == null)
+		{
+			roleRepos.save(new Role("USER"));
+		} else {
+			newRoles.add(new UserRoles(newUser, userRole));
+		}
 
 		newUser.setUserRoles(newRoles);
-
 
 		return userRepos.save(newUser);
 	}
