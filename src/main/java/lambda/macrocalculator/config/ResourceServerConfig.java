@@ -24,7 +24,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
     public void configure(HttpSecurity http) throws Exception
     {
         // http.anonymous().disable();
-        // remember that there is also security set in the UserController!
         http.authorizeRequests()
             .antMatchers("/",                       // h2
                                    "/h2-console/**",          // h2
@@ -36,11 +35,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter
                                    "/swagger-ui.html",        // swagger
                                    "/webjars/**"              // swagger
                         ).permitAll()
-                // hasAnyRole can be a list of roles as in "ADMIN", "DATA"
-                .antMatchers("/roles", "/actuator/**", "/users/**").hasAnyRole("ADMINS")
-                .antMatchers("/books/**", "/authors/**").hasAnyRole("USER", "ADMINS", "DATA")
-                .antMatchers("/data/**").hasAnyRole("ADMINS", "DATA")
-//                .antMatchers("/**").authenticated()
+                .antMatchers("/**").authenticated()
             .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());
 
         // http.requiresChannel().anyRequest().requiresSecure();
