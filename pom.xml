@@ -129,6 +129,10 @@
             <version>2.9.8</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>org.postgresql</groupId>-->
+<!--            <artifactId>postgresql</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
