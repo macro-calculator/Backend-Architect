@@ -74,12 +74,22 @@ public class UserServiceImpl implements UserDetailsService, UserService
 
 		newUser.setUsername(user.getUsername());
 		newUser.setPlainTextPass(user.getPassword());
+		newUser.setEmail(user.getEmail());
+		newUser.setAge(user.getAge());
+		newUser.setHeight(user.getHeight());
+		newUser.setCurrentweight(user.getCurrentweight());
+		newUser.setName(user.getName());
+		newUser.setActivitylevel(user.getActivitylevel());
+		newUser.setGoal(user.getGoal());
 
 		ArrayList<UserRoles> newRoles = new ArrayList<>();
 
+		//Todo make conditional. No need to create a new USER role for each new user
+//		Assigns a basic user role as a default
+		Role baseRole = new Role("USER");
+		roleRepos.save(baseRole);
 
-		Role newRole = roleRepos.findByName("admin");
-		newRoles.add(new UserRoles(newUser, newRole));
+		newRoles.add(new UserRoles(newUser, baseRole));
 
 		newUser.setUserRoles(newRoles);
 
