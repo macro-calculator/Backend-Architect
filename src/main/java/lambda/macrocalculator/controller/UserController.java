@@ -27,11 +27,18 @@ public class UserController
 	}
 
 
-		//localhost:2019/users/create
-	@PostMapping(value = "/create", consumes = {"application/json"}, produces = {"application/json"})
+	//localhost:2019/users/create
+	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> addUser(@Valid @RequestBody User newUser)
 	{
 		userService.save(newUser);
 		return new ResponseEntity<>(null, HttpStatus.CREATED);
+	}
+
+	@PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> updateUser(@RequestBody User updatedUser, Principal principal)
+	{
+		userService.update(updatedUser, principal);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
