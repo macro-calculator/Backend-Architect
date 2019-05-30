@@ -28,6 +28,8 @@ public class UserServiceImpl implements UserDetailsService, UserService
 	private UserRepository userRepos;
 	@Autowired
 	private RoleRepository roleRepos;
+	@Autowired
+	private MacrosService macrosService;
 
 	@Override
 	public User findUserByUsername(String username) throws ResourceNotFoundException
@@ -84,6 +86,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
 		newUser.setActivitylevel(user.getActivitylevel());
 		newUser.setGoal(user.getGoal());
 		newUser.setGender(user.getGender());
+		newUser.setMacros(new Macros(newUser, newUser.getHeight()));
 
 		ArrayList<UserRoles> newRoles = new ArrayList<>();
 
@@ -108,15 +111,27 @@ public class UserServiceImpl implements UserDetailsService, UserService
 	public User update(User user, Principal principal)
 	{
 		User currentUser = getCurrentUser(principal);
+		Macros macros = macrosService.findById(principal);
 
 		if(user.getCurrentweight() != currentUser.getCurrentweight())
 		{
 			currentUser.setCurrentweight(user.getCurrentweight());
+			macros.setProtein();
+			macros.setFat();
+			macros.setCarb();
+			macros.setCalories();
+			macros.setOverallMacrosPerMeal();
+
 		}
 
 		if(user.getGoal() != null)
 		{
 			currentUser.setGoal(user.getGoal());
+			macros.setProtein();
+			macros.setFat();
+			macros.setCarb();
+			macros.setCalories();
+			macros.setOverallMacrosPerMeal();
 		}
 
 		return userRepos.save(currentUser);
