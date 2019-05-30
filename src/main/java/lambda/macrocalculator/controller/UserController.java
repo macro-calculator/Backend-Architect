@@ -1,9 +1,11 @@
 package lambda.macrocalculator.controller;
 
 import io.swagger.annotations.ApiOperation;
+import lambda.macrocalculator.model.Macros;
 import lambda.macrocalculator.model.User;
 import lambda.macrocalculator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class UserController
 	@Autowired
 	private UserService userService;
 
-	@ApiOperation("Returns currently authenticated user info")
+	@ApiOperation(value = "Returns currently authenticated user info")
 	//localhost:2019/users/current
 	@GetMapping(value = "/current",
 				produces = {"application/json"})
@@ -43,4 +45,5 @@ public class UserController
 		userService.update(updatedUser, principal);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
 }
