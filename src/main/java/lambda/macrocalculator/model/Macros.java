@@ -1,7 +1,9 @@
 package lambda.macrocalculator.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lambda.macrocalculator.exception.ResourceNotFoundException;
 
 import javax.persistence.*;
 
@@ -37,15 +39,18 @@ public class Macros extends Auditable
 	{
 	}
 
-	public Macros(int inches, long protein, long carb, long fat, long calories, String meals, User user)
+	public Macros(User user, int inches)
 	{
-		this.inches = inches;
-		this.protein = protein;
-		this.carb = carb;
-		this.fat = fat;
-		this.calories = calories;
-		this.meals = meals;
+
+		long bmr;
 		this.user = user;
+		this.inches = inches;
+		this.meals = "4 meals a day";
+		setProtein();
+		setCarb();
+		setFat();
+		setCalories();
+		setOverallMacrosPerMeal();
 	}
 
 	public long getMacroid()
@@ -88,9 +93,9 @@ public class Macros extends Auditable
 		this.fatsPerMeal = fatsPerMeal;
 	}
 
-	public void setOverallMacrosPerMeal(String mealPlan)
+	public void setOverallMacrosPerMeal()
 	{
-		switch (mealPlan.toLowerCase()) {
+		switch (meals.toLowerCase()) {
 			case "4 meals a day":
 				setFatsPerMeal(getFat() / 4);
 				setProteinPerMeal(getProtein() / 4);
@@ -171,9 +176,9 @@ public class Macros extends Auditable
 		return protein;
 	}
 
-	public void setProtein(long protein)
+	public void setProtein()
 	{
-		this.protein = protein;
+		this.protein = Math.round(getTotalDailyCals() * 0.075);
 	}
 
 	public long getCarb()
@@ -181,9 +186,9 @@ public class Macros extends Auditable
 		return carb;
 	}
 
-	public void setCarb(long carb)
+	public void setCarb()
 	{
-		this.carb = carb;
+		this.carb = Math.round(getTotalDailyCals() * 0.1);;
 	}
 
 	public long getFat()
@@ -191,9 +196,9 @@ public class Macros extends Auditable
 		return fat;
 	}
 
-	public void setFat(long fat)
+	public void setFat()
 	{
-		this.fat = fat;
+		this.fat = Math.round(getTotalDailyCals() * 0.033);
 	}
 
 	public long getCalories()
@@ -201,9 +206,9 @@ public class Macros extends Auditable
 		return calories;
 	}
 
-	public void setCalories(long calories)
+	public void setCalories()
 	{
-		this.calories = calories;
+		this.calories = getTotalDailyCals();
 	}
 
 	public int getInches()
@@ -214,5 +219,74 @@ public class Macros extends Auditable
 	public void setInches(int inches)
 	{
 		this.inches = inches;
+	}
+
+	@JsonIgnore
+	public long getTotalDailyCals()
+	{
+
+		long bmr;
+
+		if(user.getGender().equals("M"))
+		{
+			bmr = Math.round(66 + (6.23 * user.getCurrentweight())
+							+ (12.7 * getInches())
+							- (6.8 * user.getAge()));
+		} else {
+			bmr =
+					Math.round(655 + (4.35 * user.getCurrentweight())
+							+ (4.7 * getInches())
+							- (4.5 * user.getAge()));
+
+		}
+
+		long tdee = 0;
+
+		switch (user.getActivitylevel().toLowerCase()) {
+			case "0 days":
+				tdee = Math.round(1.2 * bmr);
+				break;
+			case "1-2 days":
+				tdee = Math.round(1.375 * bmr);
+				break;
+			case "3-4 days":
+				tdee = Math.round(1.55 * bmr);
+				break;
+			case "5-6 days":
+				tdee = Math.round(1.725 * bmr);
+				break;
+			case "7 days":
+				tdee = Math.round(1.9 * bmr);
+				break;
+			default:
+				throw new ResourceNotFoundException("Activity level does not match format *int days*");
+		}
+
+		long totalDailyCalories;
+
+		switch (user.getGoal().toLowerCase()) {
+			case "aggressive weight loss":
+				totalDailyCalories = Math.round(tdee * 0.8);
+				break;
+			case "moderate weight loss":
+				totalDailyCalories = Math.round(tdee * 0.85);
+				break;
+			case "weight loss":
+				totalDailyCalories = Math.round(tdee * 0.9);
+				break;
+			case "maintain weight":
+				totalDailyCalories = tdee;
+				break;
+			case "moderate weight gain":
+				totalDailyCalories = Math.round(tdee * 1.1);
+				break;
+			case "aggressive weight gain":
+				totalDailyCalories = Math.round(tdee * 1.15);
+				break;
+			default:
+				throw new ResourceNotFoundException("Goal does not match format. Please make sure your goal is valid");
+		}
+
+		return totalDailyCalories;
 	}
 }
