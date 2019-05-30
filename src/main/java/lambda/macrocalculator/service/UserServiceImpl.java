@@ -1,6 +1,7 @@
 package lambda.macrocalculator.service;
 
 import lambda.macrocalculator.exception.ResourceNotFoundException;
+import lambda.macrocalculator.model.Macros;
 import lambda.macrocalculator.model.Role;
 import lambda.macrocalculator.model.User;
 import lambda.macrocalculator.model.UserRoles;
@@ -13,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
 		return userRepos.findById(id).orElseThrow(() -> new ResourceNotFoundException("Could not find user with id " + id));
 	}
 
+	@Transactional
 	@Override
 	public void delete(long id) throws ResourceNotFoundException
 	{
@@ -82,6 +83,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
 		newUser.setName(user.getName());
 		newUser.setActivitylevel(user.getActivitylevel());
 		newUser.setGoal(user.getGoal());
+		newUser.setGender(user.getGender());
 
 		ArrayList<UserRoles> newRoles = new ArrayList<>();
 
@@ -90,6 +92,8 @@ public class UserServiceImpl implements UserDetailsService, UserService
 		if(userRole == null)
 		{
 			roleRepos.save(new Role("USER"));
+			Role role = roleRepos.findByName("USER");
+			newRoles.add(new UserRoles(newUser, role));
 		} else {
 			newRoles.add(new UserRoles(newUser, userRole));
 		}
@@ -99,6 +103,7 @@ public class UserServiceImpl implements UserDetailsService, UserService
 		return userRepos.save(newUser);
 	}
 
+	@Transactional
 	@Override
 	public User update(User user, Principal principal)
 	{
@@ -116,8 +121,6 @@ public class UserServiceImpl implements UserDetailsService, UserService
 
 		return userRepos.save(currentUser);
 	}
-
-	@Transactional
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
