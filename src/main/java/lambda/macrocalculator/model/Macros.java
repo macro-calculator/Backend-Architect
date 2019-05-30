@@ -1,6 +1,7 @@
 package lambda.macrocalculator.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
@@ -17,23 +18,33 @@ public class Macros extends Auditable
 	private long carb;
 	private long fat;
 	private long calories;
+	private String meals;
+	private long proteinPerMeal;
+	private long fatsPerMeal;
+	private long carbsPerMeal;
+	private long proteinPerSnack;
+	private long fatsPerSnack;
+	private long carbsPerSnack;
+
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@MapsId
 	@JsonIgnoreProperties("macros")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private User user;
 
 	public Macros()
 	{
 	}
 
-	public Macros(int inches, long protein, long carb, long fat, long calories, User user)
+	public Macros(int inches, long protein, long carb, long fat, long calories, String meals, User user)
 	{
 		this.inches = inches;
 		this.protein = protein;
 		this.carb = carb;
 		this.fat = fat;
 		this.calories = calories;
+		this.meals = meals;
 		this.user = user;
 	}
 
@@ -45,6 +56,104 @@ public class Macros extends Auditable
 	public void setMacroid(long macroid)
 	{
 		this.macroid = macroid;
+	}
+
+	public String getMeals()
+	{
+		return meals;
+	}
+
+	public void setMeals(String meals)
+	{
+		this.meals = meals;
+	}
+
+	public long getProteinPerMeal()
+	{
+		return proteinPerMeal;
+	}
+
+	public void setProteinPerMeal(long proteinPerMeal)
+	{
+		this.proteinPerMeal = proteinPerMeal;
+	}
+
+	public long getFatsPerMeal()
+	{
+		return fatsPerMeal;
+	}
+
+	public void setFatsPerMeal(long fatsPerMeal)
+	{
+		this.fatsPerMeal = fatsPerMeal;
+	}
+
+	public void setOverallMacrosPerMeal(String mealPlan)
+	{
+		switch (mealPlan.toLowerCase()) {
+			case "4 meals a day":
+				setFatsPerMeal(getFat() / 4);
+				setProteinPerMeal(getProtein() / 4);
+				setCarbsPerMeal(getCarb() / 4);
+				break;
+			case "3 meals a day":
+				setFatsPerMeal(getFat() / 3);
+				setProteinPerMeal(getProtein() / 3);
+				setCarbsPerMeal(getCarb() / 3);
+				break;
+			case "3 meals and 2 snacks":
+				long fatsPerSn = getFat() / 8;
+				long carbsPerSn = getCarb() / 8;
+				long proteinPerSn = getProtein() / 8;
+				setFatsPerSnack(fatsPerSn);
+				setCarbsPerSnack(carbsPerSn);
+				setProteinPerSnack(proteinPerSn);
+				setFatsPerMeal(fatsPerSn * 2);
+				setCarbsPerMeal(carbsPerSn * 2);
+				setProteinPerMeal(proteinPerSn * 2);
+				break;
+
+		}
+	}
+
+	public long getCarbsPerMeal()
+	{
+		return carbsPerMeal;
+	}
+
+	public void setCarbsPerMeal(long carbsPerMeal)
+	{
+		this.carbsPerMeal = carbsPerMeal;
+	}
+
+	public long getProteinPerSnack()
+	{
+		return proteinPerSnack;
+	}
+
+	public void setProteinPerSnack(long proteinPerSnack)
+	{
+		this.proteinPerSnack = proteinPerSnack;
+	}
+
+	public long getFatsPerSnack()
+	{
+		return fatsPerSnack;
+	}
+
+	public void setFatsPerSnack(long fatsPerSnack)
+	{
+		this.fatsPerSnack = fatsPerSnack;
+	}
+
+	public long getCarbsPerSnack()
+	{
+		return carbsPerSnack;
+	}
+
+	public void setCarbsPerSnack(long carbsPerSnack)
+	{
+		this.carbsPerSnack = carbsPerSnack;
 	}
 
 	public User getUser()
