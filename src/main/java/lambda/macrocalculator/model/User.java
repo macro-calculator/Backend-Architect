@@ -28,10 +28,13 @@ public class User extends Auditable
     private String email;
 
     @Column(nullable = false)
+    private String gender;
+
+    @Column(nullable = false)
     private int age;
 
     @Column(nullable = false)
-    private float height;
+    private int height;
 
     @Column(nullable = false)
     private long currentweight;
@@ -44,17 +47,24 @@ public class User extends Auditable
 
     private String goal;
 
+
     @OneToMany(mappedBy = "user",
                cascade = CascadeType.ALL)
     @JsonIgnoreProperties("user")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<UserRoles> userRoles = new ArrayList<>();
+
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("user")
+    private Macros macros;
 
     public User()
     {
     }
 
-    public User(String username, String password, String email, int age, float height, long currentweight,
-                String name, String activitylevel, String goal, List<UserRoles> userRoles)
+    public User(String username, String password, String email, int age, int height, long currentweight,
+                String name, String activitylevel, String goal, String gender, List<UserRoles> userRoles)
     {
         this.username = username;
         this.password = password;
@@ -65,6 +75,7 @@ public class User extends Auditable
         this.name = name;
         this.activitylevel = activitylevel;
         this.goal = goal;
+        this.gender = gender;
 
         for (UserRoles ur : userRoles)
         {
@@ -123,6 +134,7 @@ public class User extends Auditable
         this.userRoles = userRoles;
     }
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public List<SimpleGrantedAuthority> getAuthority()
     {
         List<SimpleGrantedAuthority> rtnList = new ArrayList<>();
@@ -155,12 +167,12 @@ public class User extends Auditable
         this.age = age;
     }
 
-    public float getHeight()
+    public int getHeight()
     {
         return height;
     }
 
-    public void setHeight(float height)
+    public void setHeight(int height)
     {
         this.height = height;
     }
@@ -203,5 +215,25 @@ public class User extends Auditable
     public void setGoal(String goal)
     {
         this.goal = goal;
+    }
+
+    public String getGender()
+    {
+        return gender;
+    }
+
+    public void setGender(String gender)
+    {
+        this.gender = gender;
+    }
+
+    public Macros getMacros()
+    {
+        return macros;
+    }
+
+    public void setMacros(Macros macros)
+    {
+        this.macros = macros;
     }
 }
