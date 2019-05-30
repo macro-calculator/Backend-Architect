@@ -65,6 +65,7 @@ public class MacrosServiceImpl implements MacrosService
 
 		newMacros.setUser(currentUser);
 		newMacros.setInches(macros.getInches());
+		newMacros.setMeals(macros.getMeals());
 
 		long bmr;
 
@@ -92,10 +93,13 @@ public class MacrosServiceImpl implements MacrosService
 				break;
 			case "3-4 days":
 				tdee = Math.round(1.55 * bmr);
+				break;
 			case "5-6 days":
 				tdee = Math.round(1.725 * bmr);
+				break;
 			case "7 days":
 				tdee = Math.round(1.9 * bmr);
+				break;
 			default:
 				throw new ResourceNotFoundException("Activity level does not match format *int days*");
 		}
@@ -117,17 +121,25 @@ public class MacrosServiceImpl implements MacrosService
 				break;
 			case "moderate weight gain":
 				totalDailyCalories = Math.round(tdee * 1.1);
+				break;
 			case "aggressive weight gain":
 				totalDailyCalories = Math.round(tdee * 1.15);
+				break;
 			default:
 				throw new ResourceNotFoundException("Goal does not match format. Please make sure your goal is valid");
 
 		}
 
-		newMacros.setProtein(Math.round(totalDailyCalories * 0.075));
-		newMacros.setCarb(Math.round(totalDailyCalories * 0.1));
-		newMacros.setFat(Math.round(totalDailyCalories * 0.033));
+		long totalProtein = Math.round(totalDailyCalories * 0.075);
+		long totalCarbs = Math.round(totalDailyCalories * 0.1);
+		long totalFat = Math.round(totalDailyCalories * 0.033);
+
 		newMacros.setCalories(totalDailyCalories);
+		newMacros.setProtein(totalProtein);
+		newMacros.setCarb(totalCarbs);
+		newMacros.setFat(totalFat);
+
+		newMacros.setOverallMacrosPerMeal(newMacros.getMeals());
 
 		return macrosRepository.save(newMacros);
 	}
