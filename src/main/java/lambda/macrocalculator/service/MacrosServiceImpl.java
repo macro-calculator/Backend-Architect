@@ -4,6 +4,7 @@ import lambda.macrocalculator.exception.ResourceNotFoundException;
 import lambda.macrocalculator.model.Macros;
 import lambda.macrocalculator.model.User;
 import lambda.macrocalculator.repos.MacrosRepository;
+import org.codehaus.jackson.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +30,17 @@ public class MacrosServiceImpl implements MacrosService
 	}
 
 	@Override
-	public Macros update(Macros macros)
+	public Macros update(Macros macros, Principal principal)
 	{
-		return null;
+		Macros currentMacros = findById(principal);
+
+		if(macros.getMeals() != currentMacros.getMeals())
+		{
+			currentMacros.setMeals(macros.getMeals());
+			currentMacros.setOverallMacrosPerMeal();
+		}
+
+		return macrosRepository.save(currentMacros);
 	}
 
 	@Override
