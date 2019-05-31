@@ -10,7 +10,7 @@ public interface MacrosService
 
 	Macros findById(Principal principal);
 
-	Macros update(Macros macros);
+	Macros update(Macros macros, Principal principal);
 
 	void delete(long id);
 
