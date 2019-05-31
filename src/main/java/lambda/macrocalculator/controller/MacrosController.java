@@ -31,4 +31,12 @@ public class MacrosController
 
 		return new ResponseEntity<>(currentMacros, HttpStatus.OK);
 	}
+
+	@ApiOperation("Updates meal plan and macros")
+	@PutMapping(value = "updatemeals", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> updateMeals(Principal principal, @RequestBody Macros updateMacros) throws ResourceNotFoundException
+	{
+		macrosService.update(updateMacros, principal);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 }
